@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31205.134
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TrimanAssessment", "TrimanAssessment.csproj", "{8C1A2869-6B41-4215-BCB0-1049A1E13BED}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8C1A2869-6B41-4215-BCB0-1049A1E13BED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8C1A2869-6B41-4215-BCB0-1049A1E13BED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8C1A2869-6B41-4215-BCB0-1049A1E13BED}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{8C1A2869-6B41-4215-BCB0-1049A1E13BED}.Release|Any CPU.Build.0 = Debug|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {48A11A64-4F49-4A71-B797-4D5DF40F03AF}
+	EndGlobalSection
+EndGlobal
