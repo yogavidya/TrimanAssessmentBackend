@@ -26,6 +26,7 @@ namespace TrimanAssessment
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddTransient<Interfaces.ILogParser, Models.LogParser>();
             services.AddCors(options =>
             {
                 options.AddPolicy("LocalhostAPIPolicy",
