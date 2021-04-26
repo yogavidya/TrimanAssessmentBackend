@@ -1,17 +1,21 @@
-﻿using System;
+﻿// <copyright file="ILogParser.cs" company="Salvatore Uras">
+// Copyright (c) Salvatore Uras. All rights reserved.
+// </copyright>
+
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using System.IO;
 
-public enum LogParserStatus {
-    Empty,  // contains no log information (ParseStream never invoked) 
-    Initialized, // successfully executed ParseStream()
-    Error // contains no log information (ParseStream failed) 
-};
 
 namespace TrimanAssessment.Interfaces
 {
+    public enum LogParserStatus
+    {
+        Empty,  // contains no log information (ParseStream never invoked)
+        Running,
+        Initialized, // successfully executed ParseStream()
+        Error // contains no log information (ParseStream failed)
+    }
+
     public interface ILogParser
     {
         List<Models.ClientIPReport> ClientIPReports
@@ -19,12 +23,21 @@ namespace TrimanAssessment.Interfaces
             get;
         }
 
-        bool ParseStream(Stream fs);
+        void ParseStream(Stream fs);
 
         LogParserStatus Status
         {
-            get {
+            get
+            {
                 return LogParserStatus.Empty;
+            }
+        }
+
+        ulong ParsedLines
+        {
+            get
+            {
+                return 0;
             }
         }
     }

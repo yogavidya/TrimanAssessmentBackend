@@ -27,15 +27,16 @@ namespace TrimanAssessment
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddTransient<Interfaces.ILogParser, Models.LogParser>();
-            services.AddCors(options =>
-            {
-                options.AddPolicy("LocalhostAPIPolicy",
-                    builder =>
-                    {
-                        builder.WithOrigins("*")
-                        .WithHeaders(HeaderNames.ContentType);
-                    });
-            });
+            _ = services.AddCors(options =>
+              {
+                  options.AddPolicy(
+                      "LocalhostAPIPolicy",
+                      builder =>
+                      {
+                          builder.WithOrigins("*")
+                          .WithHeaders(HeaderNames.ContentType);
+                      });
+              });
             services.AddControllers();
         }
 
@@ -59,6 +60,8 @@ namespace TrimanAssessment
             {
                 endpoints.MapControllers();
             });
+
+            app.UseWebSockets();
         }
     }
 }

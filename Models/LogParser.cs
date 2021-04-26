@@ -11,6 +11,7 @@ namespace TrimanAssessment.Models
     using System.Text;
     using System.Text.RegularExpressions;
     using System.Threading.Tasks;
+    using TrimanAssessment.Interfaces;
 
     public class LogParser : Interfaces.ILogParser
     {
@@ -28,6 +29,23 @@ namespace TrimanAssessment.Models
 
         private readonly string cantParse = "Unable to parse file.";
 
+        private LogParserStatus status = LogParserStatus.Empty;
+
+        private ulong parsedLines = 0;
+
+        public LogParserStatus Status
+        {
+            get { return this.status; }
+        }
+
+        public ulong ParsedLines
+        {
+            get
+            {
+                return this.parsedLines;
+            }
+        }
+
         public List<ClientIPReport> ClientIPReports
         {
             get
@@ -36,8 +54,9 @@ namespace TrimanAssessment.Models
             }
         }
 
-        public bool ParseStream(Stream fs)
+        public void ParseStream(Stream fs)
         {
+            this.status = LogParserStatus.Running;
             var initialPosition = fs.Position;
             fs.Position = 0;
             StreamReader? reader = null;
@@ -48,7 +67,9 @@ namespace TrimanAssessment.Models
                 do
                 {
                     more = this.ParseNextBlock(reader);
-                } while (more);
+                }
+                while (more);
+                this.status = LogParserStatus.Initialized;
             }
             catch (Exception)
             {
@@ -56,7 +77,6 @@ namespace TrimanAssessment.Models
             }
 
             fs.Position = initialPosition;
-            return true;
         }
 
         protected bool ParseNextBlock(StreamReader sr)
@@ -109,38 +129,35 @@ namespace TrimanAssessment.Models
                     {
                         this.clientIPReports[listedEntryIndex].AddCall();
                     }
-                    System.Diagnostics.Debug.WriteLine("Count: {0}", this.clientIPReports.Count);
+
+                    this.parsedLines++;
+                    System.Diagnostics.Debug.WriteLine("lines: {0}", this.parsedLines);
                 }
             }
         }
 
-        protected String? ReadBlockHeader(StreamReader sr)
+        protected string? ReadBlockHeader(StreamReader sr)
         {
-            var result = new String("");
+            var result = new string(string.Empty);
             int linesReadCount = 0;
-            while(linesReadCount < 4)
+            while (linesReadCount < 4)
             {
-                if (sr.Peek() != '#') return null;
+                if (sr.Peek() != '#')
+                {
+                    return null;
+                }
+
                 var line = sr.ReadLine();
-                if (line == null) return null;
+                if (line == null)
+                {
+                    return null;
+                }
+
                 result = result + line + "\r\n";
                 linesReadCount++;
             }
+            this.parsedLines += (ulong)linesReadCount;
             return result;
-        }
-
-        protected bool ParseBlock()
-        {
-            return true;
-        }
-
-        protected bool ParseStreaming()
-        {
-            return true;
-        }
-        private LogParserStatus status = LogParserStatus.Empty;
-        public LogParserStatus Status {
-            get { return this.status; }
         }
     }
 }

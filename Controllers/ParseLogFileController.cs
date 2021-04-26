@@ -16,12 +16,36 @@ namespace TrimanAssessment.Controllers
     [Route("[controller]")]
     public class ParseLogFileController : ControllerBase
     {
-        private readonly ILogger<ParseLogFileController> _logger;
-        private readonly ILogParser _logParser;
+        private readonly ILogger<ParseLogFileController> logger;
+        private readonly ILogParser logParser;
 
         public ParseLogFileController(ILogParser logParser)
         {
-            _logParser = logParser;
+            this.logParser = logParser;
+        }
+
+        [HttpGet]
+        public JsonResult PollPendingParseOperation()
+        {
+            var jsonSourceData = new Dictionary<string, object>();
+            switch (this.logParser.Status)
+            {
+                case LogParserStatus.Empty:
+                    jsonSourceData["status"] = "empty";
+                    break;
+                case LogParserStatus.Running:
+                    jsonSourceData["status"] = "running";
+                    break;
+                case LogParserStatus.Error:
+                    jsonSourceData["status"] = "error";
+                    break;
+                case LogParserStatus.Initialized:
+                    jsonSourceData["status"] = "initialized";
+                    break;
+            }
+
+            jsonSourceData["parsedLines"] = this.logParser.ParsedLines;
+            return new JsonResult(jsonSourceData);
         }
 
         [HttpPost]
@@ -33,25 +57,28 @@ namespace TrimanAssessment.Controllers
                 responseBodyMap["status"] = "OK";
                 using (var fs = filesData.Files[0].OpenReadStream())
                 {
-                    _logParser.ParseStream(fs);
-                    var JsonSourceData = new List<Dictionary<string, object>>();
-                    _logParser.ClientIPReports.ForEach(entry => {
+                    this.logParser.ParseStream(fs);
+                    var jsonSourceData = new List<Dictionary<string, object>>();
+                    this.logParser.ClientIPReports.ForEach(entry =>
+                    {
                         var entryData = new Dictionary<string, object>()
                         {
                             { "ip", entry.ClientIP },
                             { "fqdn", entry.FQDN },
                             { "calls", entry.Calls },
                         };
-                        JsonSourceData.Add(entryData);
+                        jsonSourceData.Add(entryData);
                     });
-                    responseBodyMap["data"] = JsonSourceData;
+                    responseBodyMap["status"] = "OK";
+                    responseBodyMap["data"] = jsonSourceData;
                     return new JsonResult(responseBodyMap);
                 }
             }
-            catch(Exception exc) {
+            catch (Exception exc)
+            {
                 this.Response.StatusCode = StatusCodes.Status500InternalServerError;
                 responseBodyMap["status"] = "Server error";
-                responseBodyMap["message"] = exc.Message;
+                responseBodyMap["errorMessage"] = exc.Message;
                 return new JsonResult(responseBodyMap);
             }
         }

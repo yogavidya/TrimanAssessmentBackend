@@ -1,68 +1,79 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Threading.Tasks;
-
-namespace TrimanAssessment.Models
+﻿namespace TrimanAssessment.Models
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Net;
+    using System.Threading.Tasks;
+
     public class ClientIPReport
     {
-        private ClientIPReport() { }
-        public ClientIPReport( string IP, ulong calls)
+        private string clientIP = string.Empty;
+        private string fqdn = string.Empty;
+        private ulong calls = 0;
+        private string errorMessage = string.Empty;
+
+        public ClientIPReport( string ip, ulong calls)
         {
-            _clientIP = IP;
-            _calls = calls;
+            this.clientIP = ip;
+            this.calls = calls;
             IPHostEntry? hostEntry = null;
             try
             {
-                hostEntry = Dns.GetHostEntry(IPAddress.Parse(_clientIP));
+                hostEntry = Dns.GetHostEntry(IPAddress.Parse(this.clientIP));
             }
             catch (Exception exc)
             {
                 hostEntry = null;
-                _errorMessage = exc.Message;
+                this.errorMessage = exc.Message;
             }
             finally
             {
                 if (hostEntry != null)
                 {
-                    _fqdn = hostEntry.HostName;
+                    this.fqdn = hostEntry.HostName;
                 } else
                 {
-                    _fqdn = "";
+                    this.fqdn = string.Empty;
                 }
             }
         }
 
         public ulong AddCall()
         {
-            return this._calls++;
+            return this.calls++;
         }
 
-        protected string _clientIP = "";
-        public string ClientIP { 
-            get {
-                return _clientIP;
-            } 
+        public string ClientIP
+        {
+            get
+            {
+                return this.clientIP;
+            }
         }
-        protected string _fqdn = "";
+
         public string FQDN
         {
             get
             {
-                return _fqdn;
+                return this.fqdn;
             }
         }
-        protected ulong _calls = 0;
+
         public ulong Calls
         {
             get
             {
-                return _calls;
+                return this.calls;
             }
         }
-        protected string _errorMessage = "";
-        public string ErrorMessage { get { return _errorMessage; } }
+
+        public string ErrorMessage
+        {
+            get
+            {
+                return this.errorMessage;
+            }
+        }
     }
 }
