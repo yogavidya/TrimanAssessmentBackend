@@ -99,5 +99,46 @@
             </summary>
             <returns>The value of <see cref="F:TrimanAssessment.Models.ClientIPReport.calls"/> after the increment.</returns>
         </member>
+        <member name="T:TrimanAssessment.Models.LogParser">
+            <summary>
+            Implements the <see cref="T:TrimanAssessment.Interfaces.ILogParser"/> interface.
+            This is the actual service implementation in the API.
+            </summary>
+        </member>
+        <member name="P:TrimanAssessment.Models.LogParser.Status">
+            <inheritdoc/>
+        </member>
+        <member name="P:TrimanAssessment.Models.LogParser.ParsedLines">
+            <inheritdoc/>
+        </member>
+        <member name="P:TrimanAssessment.Models.LogParser.ClientIPReports">
+            <inheritdoc/>
+        </member>
+        <member name="M:TrimanAssessment.Models.LogParser.ParseStream(System.IO.Stream)">
+            <inheritdoc/>
+        </member>
+        <member name="M:TrimanAssessment.Models.LogParser.ParseNextBlock(System.IO.StreamReader)">
+            <summary>
+            Parses the next entry block in the log file and updates <see cref="F:TrimanAssessment.Models.LogParser.clientIPReports"/> accordingly.
+            </summary>
+            <param name="sr">A StreamReader for the log file.</param>
+            <returns>bool true if there was a block to parse, else false.</returns>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:TrimanAssessment.Models.LogParser.ThrowCantParse" -->
+        <member name="M:TrimanAssessment.Models.LogParser.ReadBlockEntries(System.IO.StreamReader,System.Int32)">
+            <summary>
+            Reads and parses the actual log entries after a block header.
+            </summary>
+            <param name="sr">The StreamReader for a log file.</param>
+            <param name="clientIPIndex">The index for the client_ip in a space delimited log entry data line.</param>
+        </member>
+        <member name="M:TrimanAssessment.Models.LogParser.ReadBlockHeader(System.IO.StreamReader)">
+            <summary>
+            Reads the lines of a log file block header. 
+            Used by <see cref="M:TrimanAssessment.Models.LogParser.ParseNextBlock(System.IO.StreamReader)"/>.
+            </summary>
+            <param name="sr">The StreamReader for this log file.</param>
+            <returns>The header lines in a single string, or null if format not matching.</returns>
+        </member>
     </members>
 </doc>
