@@ -20,12 +20,27 @@
             IPHostEntry? hostEntry = null;
             try
             {
-                hostEntry = Dns.GetHostEntry(IPAddress.Parse(this.clientIP));
+                var ipAddress = IPAddress.Parse(this.clientIP);
+                if (ipAddress.Equals(IPAddress.IPv6Loopback))
+                {
+                    hostEntry = new IPHostEntry();
+                    hostEntry.HostName = "localhost";
+                }
+                else
+                {
+                    hostEntry = Dns.GetHostEntry(ipAddress);
+                }
+            }
+            catch (System.Net.Sockets.SocketException exc)
+            {
+                hostEntry = null;
+                this.errorMessage = exc.Message;
             }
             catch (Exception exc)
             {
                 hostEntry = null;
                 this.errorMessage = exc.Message;
+                throw exc;
             }
             finally
             {

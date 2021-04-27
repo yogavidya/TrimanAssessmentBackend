@@ -27,8 +27,6 @@ namespace TrimanAssessment.Models
                 @"#Fields: (?<fields>[\w*\-*\(*\)* ]*)"),
                 RegexOptions.IgnoreCase | RegexOptions.Multiline);
 
-        private readonly string cantParse = "Unable to parse file.";
-
         private LogParserStatus status = LogParserStatus.Empty;
 
         private ulong parsedLines = 0;
@@ -71,9 +69,10 @@ namespace TrimanAssessment.Models
                 while (more);
                 this.status = LogParserStatus.Initialized;
             }
-            catch (Exception)
+            catch (Exception exc)
             {
                 this.status = LogParserStatus.Error;
+                throw new Exception(exc.Message);
             }
 
             fs.Position = initialPosition;
@@ -89,13 +88,13 @@ namespace TrimanAssessment.Models
             var headerText = this.ReadBlockHeader(sr);
             if (headerText == null)
             {
-                throw new Exception(this.cantParse);
+                this.ThrowCantParse();
             }
 
             var matches = this.blockHeaderRegex.Matches(headerText, 0);
             if (matches.Count != 1)
             {
-                throw new Exception(this.cantParse);
+                this.ThrowCantParse();
             }
 
             var clientIPIndex = Array.FindIndex<string>(
@@ -103,11 +102,16 @@ namespace TrimanAssessment.Models
                 s => s == "c-ip");
             if (clientIPIndex == -1)
             {
-                throw new Exception(this.cantParse);
+                this.ThrowCantParse();
             }
 
             this.ReadBlockEntries(sr, clientIPIndex);
             return true;
+        }
+
+        protected void ThrowCantParse()
+        {
+            throw new Exception(string.Format("Unable to parse file after line {0}.", this.ParsedLines));
         }
 
         protected void ReadBlockEntries(
@@ -119,11 +123,32 @@ namespace TrimanAssessment.Models
                 var line = sr.ReadLine();
                 if (line != null)
                 {
-                    var clientIP = line.Split(' ')[clientIPIndex];
+                    var tokens = line.Split(' ');
+                    if (tokens.Length <= clientIPIndex)
+                    {
+                        this.ThrowCantParse();
+                    }
+
+                    var clientIP = tokens[clientIPIndex];
+
+                    // Obscure bug, sometimes ::1 in file appears in read line as ::1%0
+                    if (clientIP == "::1%0")
+                    {
+                        clientIP = "::1"; // Quick'n'dirty fix
+                    }
+
                     var listedEntryIndex = this.clientIPReports.FindIndex(entry => entry.ClientIP == clientIP);
                     if (listedEntryIndex == -1)
                     {
-                        this.clientIPReports.Add(new ClientIPReport(clientIP, 1));
+                        try
+                        {
+                            var newClientReport = new ClientIPReport(clientIP, 1);
+                            this.clientIPReports.Add(newClientReport);
+                        }
+                        catch (Exception)
+                        {
+                            this.ThrowCantParse();
+                        }
                     }
                     else
                     {
@@ -131,7 +156,6 @@ namespace TrimanAssessment.Models
                     }
 
                     this.parsedLines++;
-                    System.Diagnostics.Debug.WriteLine("lines: {0}", this.parsedLines);
                 }
             }
         }

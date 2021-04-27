@@ -16,6 +16,9 @@ namespace TrimanAssessment
 {
     public class Startup
     {
+        private const string OpenCORSPolicy = "DevelopmentCORSPolicy";
+        private const string ProductionCORSPolicy = "ProductionCORSPolicy";
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -30,11 +33,12 @@ namespace TrimanAssessment
             _ = services.AddCors(options =>
               {
                   options.AddPolicy(
-                      "LocalhostAPIPolicy",
+                      OpenCORSPolicy,
                       builder =>
                       {
                           builder.WithOrigins("*")
-                          .WithHeaders(HeaderNames.ContentType);
+                          .WithHeaders(HeaderNames.ContentType)
+                          .WithMethods("POST", "GET");
                       });
               });
             services.AddControllers();
@@ -52,7 +56,10 @@ namespace TrimanAssessment
 
             app.UseRouting();
 
-            app.UseCors("LocalhostAPIPolicy");
+            if (env.IsDevelopment())
+            {
+                app.UseCors(OpenCORSPolicy);
+            }
 
             app.UseAuthorization();
 
@@ -61,7 +68,6 @@ namespace TrimanAssessment
                 endpoints.MapControllers();
             });
 
-            app.UseWebSockets();
         }
     }
 }

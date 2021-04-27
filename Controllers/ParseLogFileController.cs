@@ -24,30 +24,6 @@ namespace TrimanAssessment.Controllers
             this.logParser = logParser;
         }
 
-        [HttpGet]
-        public JsonResult PollPendingParseOperation()
-        {
-            var jsonSourceData = new Dictionary<string, object>();
-            switch (this.logParser.Status)
-            {
-                case LogParserStatus.Empty:
-                    jsonSourceData["status"] = "empty";
-                    break;
-                case LogParserStatus.Running:
-                    jsonSourceData["status"] = "running";
-                    break;
-                case LogParserStatus.Error:
-                    jsonSourceData["status"] = "error";
-                    break;
-                case LogParserStatus.Initialized:
-                    jsonSourceData["status"] = "initialized";
-                    break;
-            }
-
-            jsonSourceData["parsedLines"] = this.logParser.ParsedLines;
-            return new JsonResult(jsonSourceData);
-        }
-
         [HttpPost]
         public JsonResult ParseUploadedLogFile([FromForm] IFormCollection filesData)
         {
@@ -69,7 +45,6 @@ namespace TrimanAssessment.Controllers
                         };
                         jsonSourceData.Add(entryData);
                     });
-                    responseBodyMap["status"] = "OK";
                     responseBodyMap["data"] = jsonSourceData;
                     return new JsonResult(responseBodyMap);
                 }

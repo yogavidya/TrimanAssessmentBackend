@@ -2,12 +2,11 @@
 // Copyright (c) Salvatore Uras. All rights reserved.
 // </copyright>
 
-using System.Collections.Generic;
-using System.IO;
-
-
 namespace TrimanAssessment.Interfaces
 {
+    using System.Collections.Generic;
+    using System.IO;
+
     public enum LogParserStatus
     {
         Empty,  // contains no log information (ParseStream never invoked)
