@@ -1,0 +1,103 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>TrimanAssessment</name>
+    </assembly>
+    <members>
+        <member name="T:TrimanAssessment.Interfaces.LogParserStatus">
+            <summary>
+            Status descriptions for a <see cref="T:TrimanAssessment.Interfaces.ILogParser"/> service.
+            </summary>
+        </member>
+        <member name="F:TrimanAssessment.Interfaces.LogParserStatus.Empty">
+            <summary>
+            Service contains no log information (<see cref="M:TrimanAssessment.Interfaces.ILogParser.ParseStream(System.IO.Stream)"/> never invoked).
+            </summary>
+        </member>
+        <member name="F:TrimanAssessment.Interfaces.LogParserStatus.Running">
+            <summary>
+            Service is executing <see cref="M:TrimanAssessment.Interfaces.ILogParser.ParseStream(System.IO.Stream)"/>.
+            </summary>
+        </member>
+        <member name="F:TrimanAssessment.Interfaces.LogParserStatus.Initialized">
+            <summary>
+            Service successfully executed <see cref="M:TrimanAssessment.Interfaces.ILogParser.ParseStream(System.IO.Stream)"/> and contains information.
+            (See ILogParser.ClientIPReports).
+            </summary>
+        </member>
+        <member name="F:TrimanAssessment.Interfaces.LogParserStatus.Error">
+            <summary>
+            Service contains no log information (<see cref="M:TrimanAssessment.Interfaces.ILogParser.ParseStream(System.IO.Stream)"/> failed).
+            </summary>
+        </member>
+        <member name="T:TrimanAssessment.Interfaces.ILogParser">
+            <summary>
+            The interface exposed by a LogParser service.
+            </summary>
+        </member>
+        <member name="P:TrimanAssessment.Interfaces.ILogParser.ClientIPReports">
+            <summary>
+            Gets the list of parsed reports (<see cref="T:TrimanAssessment.Models.ClientIPReport"/>).
+            </summary>
+        </member>
+        <member name="P:TrimanAssessment.Interfaces.ILogParser.Status">
+            <summary>
+            Gets the status of the LogParser service (<see cref="T:TrimanAssessment.Interfaces.LogParserStatus"/>).
+            </summary>
+        </member>
+        <member name="P:TrimanAssessment.Interfaces.ILogParser.ParsedLines">
+            <summary>
+            Gets the number of lines parsed by the service (<see cref="M:TrimanAssessment.Interfaces.ILogParser.ParseStream(System.IO.Stream)"/>).
+            </summary>
+        </member>
+        <member name="M:TrimanAssessment.Interfaces.ILogParser.ParseStream(System.IO.Stream)">
+            <summary>
+            Parses an IIS log file Stream, retrieving aggregate information on entries (<see cref="T:TrimanAssessment.Models.ClientIPReport"/>).
+            </summary>
+            <param name="fs">An IIS log file Stream.</param>
+        </member>
+        <member name="T:TrimanAssessment.Models.ClientIPReport">
+            <summary>
+            Holds a bit of information about a single client IP in an IIS log file.
+            iLogParser exposes a list of these (see Interfaces/iLogParser and Models/LogParser).
+            </summary>
+        </member>
+        <member name="M:TrimanAssessment.Models.ClientIPReport.#ctor(System.String,System.UInt64)">
+            <summary>
+            Initializes a new instance of the <see cref="T:TrimanAssessment.Models.ClientIPReport"/> class.
+            </summary>
+            <param name="ip">
+            The IP address for this set of log entries.
+            </param>
+            <param name="calls">
+            The number of log entries in this set.
+            </param>
+        </member>
+        <member name="P:TrimanAssessment.Models.ClientIPReport.ClientIP">
+            <summary>
+            Gets the client IP (string) for this set of log entries.
+            </summary>
+        </member>
+        <member name="P:TrimanAssessment.Models.ClientIPReport.FQDN">
+            <summary>
+            Gets the FQDN (actually the hostname string) for this set of log entries.
+            </summary>
+        </member>
+        <member name="P:TrimanAssessment.Models.ClientIPReport.Calls">
+            <summary>
+            Gets the number of log entries in this set.
+            </summary>
+        </member>
+        <member name="P:TrimanAssessment.Models.ClientIPReport.ErrorMessage">
+            <summary>
+            Gets the error message, if any, caused by exceptions in the constructor.
+            </summary>
+        </member>
+        <member name="M:TrimanAssessment.Models.ClientIPReport.AddCall">
+            <summary>
+            Increments the <see cref="F:TrimanAssessment.Models.ClientIPReport.calls"/> member by 1.
+            </summary>
+            <returns>The value of <see cref="F:TrimanAssessment.Models.ClientIPReport.calls"/> after the increment.</returns>
+        </member>
+    </members>
+</doc>

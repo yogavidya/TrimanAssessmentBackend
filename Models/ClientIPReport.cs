@@ -6,6 +6,10 @@
     using System.Net;
     using System.Threading.Tasks;
 
+/// <summary>
+/// Holds a bit of information about a single client IP in an IIS log file.
+/// iLogParser exposes a list of these (see Interfaces/iLogParser and Models/LogParser).
+/// </summary>
     public class ClientIPReport
     {
         private string clientIP = string.Empty;
@@ -13,7 +17,16 @@
         private ulong calls = 0;
         private string errorMessage = string.Empty;
 
-        public ClientIPReport( string ip, ulong calls)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ClientIPReport"/> class.
+        /// </summary>
+        /// <param name="ip">
+        /// The IP address for this set of log entries.
+        /// </param>
+        /// <param name="calls">
+        /// The number of log entries in this set.
+        /// </param>
+        public ClientIPReport(string ip, ulong calls)
         {
             this.clientIP = ip;
             this.calls = calls;
@@ -47,18 +60,17 @@
                 if (hostEntry != null)
                 {
                     this.fqdn = hostEntry.HostName;
-                } else
+                }
+                else
                 {
                     this.fqdn = string.Empty;
                 }
             }
         }
 
-        public ulong AddCall()
-        {
-            return this.calls++;
-        }
-
+        /// <summary>
+        /// Gets the client IP (string) for this set of log entries.
+        /// </summary>
         public string ClientIP
         {
             get
@@ -67,6 +79,9 @@
             }
         }
 
+        /// <summary>
+        /// Gets the FQDN (actually the hostname string) for this set of log entries.
+        /// </summary>
         public string FQDN
         {
             get
@@ -75,6 +90,9 @@
             }
         }
 
+        /// <summary>
+        /// Gets the number of log entries in this set.
+        /// </summary>
         public ulong Calls
         {
             get
@@ -83,12 +101,24 @@
             }
         }
 
+        /// <summary>
+        /// Gets the error message, if any, caused by exceptions in the constructor.
+        /// </summary>
         public string ErrorMessage
         {
             get
             {
                 return this.errorMessage;
             }
+        }
+
+        /// <summary>
+        /// Increments the <see cref="calls"/> member by 1.
+        /// </summary>
+        /// <returns>The value of <see cref="calls"/> after the increment.</returns>
+        public ulong AddCall()
+        {
+            return this.calls++;
         }
     }
 }
